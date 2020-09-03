@@ -1,14 +1,14 @@
 package guru.springframework.msscbrewery.web.model;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
 import java.util.UUID;
 
-@Data
+@Value
 @Builder
 public class CustomerDto {
 
-    private UUID id;
-    private String name;
+    UUID id;
+    String name;
 }

@@ -1,15 +1,15 @@
 package guru.springframework.msscbrewery.web.model;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
 import java.util.UUID;
 
-@Data
+@Value
 @Builder
 public class BeerDto {
-    private UUID id;
-    private String name;
-    private String style;
-    private Long upc;
+    UUID id;
+    String name;
+    String style;
+    Long upc;
 }
