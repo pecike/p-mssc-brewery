@@ -3,15 +3,11 @@ package guru.springframework.msscbrewery.web.controller;
 import guru.springframework.msscbrewery.services.CustomerService;
 import guru.springframework.msscbrewery.web.model.CustomerDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import static org.springframework.http.ResponseEntity.*;
@@ -60,18 +56,6 @@ public class CustomerController {
 
         customerService.deleteCustomerById(customerId);
         return noContent().build();
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> validationErrorHandler(MethodArgumentNotValidException e) {
-        log.warn("Validation error: {}", e.getMessage());
-
-        final Map<String, String> errors = new HashMap<>(e.getBindingResult().getFieldErrorCount());
-        e.getBindingResult().getFieldErrors().forEach(fieldError ->
-                errors.put(fieldError.getField(), fieldError.getDefaultMessage())
-        );
-
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }
 
