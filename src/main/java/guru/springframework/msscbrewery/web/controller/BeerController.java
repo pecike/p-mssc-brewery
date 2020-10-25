@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.springframework.http.ResponseEntity.*;
 
@@ -63,10 +61,10 @@ public class BeerController {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> validateErrorHandler(MethodArgumentNotValidException e) {
+    public ResponseEntity<Map<String, String>> validationErrorHandler(MethodArgumentNotValidException e) {
         log.warn("Validation error: {}", e.getMessage());
-        final Map<String, String> errors = new HashMap<>(e.getBindingResult().getAllErrors().size());
 
+        final Map<String, String> errors = new HashMap<>(e.getBindingResult().getAllErrors().size());
         e.getBindingResult().getFieldErrors().forEach(fieldError ->
                 errors.put(fieldError.getField(), fieldError.getDefaultMessage())
         );
