@@ -12,12 +12,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
+import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 //@WebMvcTest(BeerController.class)
 @AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK, classes = {MsscBreweryApplication.class})
+@SpringBootTest(classes = {MsscBreweryApplication.class})
 class BeerControllerTest {
 
     @Autowired
@@ -43,24 +44,33 @@ class BeerControllerTest {
 
     @Test
     void saveNewBeer() throws Exception {
-        final UUID beerId = UUID.randomUUID();
+        final BeerDto beerDto = getBasicBeerDto().build();
+        final String beerDtoJson = mapper.writeValueAsString(beerDto);
+
+        mockMvc.perform(post(BeerController.API_V1_BEERS)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(beerDtoJson))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void saveNewBeer_shouldReturnBadRequest_whenBeerDtoIsInvalid() throws Exception {
         final BeerDto beerDto = getBasicBeerDto()
-                .id(beerId)
+                .name("")
                 .build();
         final String beerDtoJson = mapper.writeValueAsString(beerDto);
 
         mockMvc.perform(post(BeerController.API_V1_BEERS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(beerDtoJson))
-                .andExpect(status().isCreated())
-                .andExpect(header().string("location", BeerController.API_V1_BEERS + "/" + beerId));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.name", is("must not be blank")));
     }
 
     @Test
     void updateBeer() throws Exception {
         final UUID beerId = UUID.randomUUID();
         final BeerDto beerDto = getBasicBeerDto()
-                .id(beerId)
                 .build();
         final String beerDtoJson = mapper.writeValueAsString(beerDto);
 
